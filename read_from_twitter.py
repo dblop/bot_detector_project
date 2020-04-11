@@ -38,12 +38,17 @@ with open("data.txt") as f:
             time.sleep(60)
             df_a = pd.DataFrame(dict_data, index=[0])
             df_a.to_csv("retry_later_users.csv",mode="a",index=False,header=False)
+            print(f"Iteration {count} hit a RateLimitError")
             continue            
         except TweepError as e:
             dict_data["user_id"] = user_id
             # error codes and messages:
             # https://developer.twitter.com/en/docs/basics/response-codes
-            dict_data["error"] = e.response.text
+            # if there's any non-Twitter error we don't get the message!
+            try:
+                dict_data["error"] = e.response.text
+            except:
+                dict_data["error"] = "Error without message"
             df_a = pd.DataFrame(dict_data, index=[0])
             df_a.to_csv("suspended_users.csv",mode="a",index=False,header=False)
             continue
