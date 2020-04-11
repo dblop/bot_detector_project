@@ -1,48 +1,71 @@
 import tweepy
 import time
+import pandas as pd
+import os.path
+import datetime
+from tweepy.error import RateLimitError, TweepError
+
 consumer_key = "7ud8FIZYfbNeTeXZhemTwl08T"
 consumer_secret = "aKsSRvFOiUdPjHbL2sKcwF55WBTWb4GAvM5BSFH6stvLyamyrJ"
 
 access_token = "1180902059077521408-z01YFValEgCwAq6xsIgVgUt4daprM9"
 access_secret = "s6NDmZfODm14R7ZUfGQ1lqkzD5idAELeBMwfsERQamcuf"
 
-#auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth = tweepy.AppAuthHandler(consumer_key, consumer_secret)
-
-
-#try:
-#    redirect_url = auth.get_authorization_url()
-#except tweepy.TweepError:
-#    print('Error! Failed to get request token.')
-
-# Example w/o callback (desktop)proba
-#verifier = raw_input('Verifier:')
 
 
 api = tweepy.API(auth)
 
-#start = time.time()
-user = api.get_user('alvarodias_')
+count = 0 
+with open("data.txt") as f:
+    for line in f:
+        count += 1
+        start = time.time()
 
-import pandas as pd
+        data = line.split(",")
+        dataset = data[0]
+        user_id = data[1]
+        label = data[2].strip('\n')
+        
+        dict_data = dict()
+        dict_data["dataset"] = dataset
+        dict_data["label"] = label
 
-dict_data = {'statuses_count': [user.statuses_count], 'followers_count': [user.followers_count], 'friends_count': [user.friends_count], 'favourites_count': [user.favourites_count], 'default_profile': [user.default_profile] , 'geo_enabled': [user.geo_enabled] , 'profile_use_background_image': [user.profile_use_background_image] , 'verified': [user.verified] , 'protected': [user.protected]  }
-df_a = pd.DataFrame(dict_data)
-from joblib import dump, load
-from sklearn.ensemble import RandomForestClassifier
+        try:
+            user = api.get_user(user_id=user_id)
+        except RateLimitError:
+            dict_data["user_id"] = user_id
+            time.sleep(60)
+            df_a = pd.DataFrame(dict_data, index=[0])
+            df_a.to_csv("retry_later_users.csv",mode="a",index=False,header=False)
+            continue            
+        except TweepError as e:
+            dict_data["user_id"] = user_id
+            # error codes and messages:
+            # https://developer.twitter.com/en/docs/basics/response-codes
+            dict_data["error"] = e.response.text
+            df_a = pd.DataFrame(dict_data, index=[0])
+            df_a.to_csv("suspended_users.csv",mode="a",index=False,header=False)
+            continue
+        
+        #
+        params = list(user.__dict__.keys())
+        params.remove("_api")
+        params.remove("_json")
+        params.remove("status")
+        params.remove("entities")
+        params.remove("created_at")
+        
+        #API doesnt return the null profile_banner_url if there's none
+        dict_data["profile_banner_url"] = None
+        for param in params:
+            dict_data[param] = getattr(user,param)
 
-rf = load('randomforest.joblib') 
-result = rf.predict_proba(df_a)
-print(result)
-print(result[0][1])
-#stuff = api.user_timeline(screen_name = 'realDonaldTrump', count = 100, include_rts = True)
-
-#stop = time.time()
-#dif = stop-start
+        df_a = pd.DataFrame(dict_data, index=[0])
 
 
-#public_tweets = api.home_timeline()
-#for tweet in public_tweets:
-#    print(tweet.text)
-
-
+        df_a.to_csv("users.csv",mode="a",index=False,header=False)
+        
+        stop = time.time()
+        dif = stop-start
+        print(f"Iteration {count} took {dif} seconds")
