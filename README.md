@@ -39,3 +39,8 @@ Datasets that already included their relevant variables:
     
 * "cresci-2017"
 
+ 'fake_followers.csv', 'genuine_accounts.csv',
+       'social_spambots_1.csv', 'social_spambots_2.csv',
+       'social_spambots_3.csv', 'traditional_spambots_1.csv',
+       'traditional_spambots_2.csv', 'traditional_spambots_3.csv',
+       'traditional_spambots_4.csv'
