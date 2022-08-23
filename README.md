@@ -1,5 +1,5 @@
 # bot_detector
-This is my personal project for a bot detector on Twitter.
+This repository contains tests made for checking the effect of a few types of clustering pre-processing for bot detector on Twitter. It's part of an Msc program at USP (Universidade de São Paulo)
 
 Initial data used for training comes from datasets available at https://botometer.iuni.iu.edu/bot-repository/datasets.html
 
@@ -9,6 +9,9 @@ Most datasets have only the label and will need to have their data retrieved thr
 
 `read_from_twitter.py` builds the data from Twitter.
 
+`tidy_cresci.py` and `tidy_users.py` are then applied to the data with features.
+
+`run_experiment.ipynb` contains the code to run the experiments, while the `results_10pct_` files have the code to run all results.
 
 
 Datasets that have their data retrieved through the Twitter API:
@@ -22,10 +25,6 @@ Datasets that have their data retrieved through the Twitter API:
 * "pronbots.tsv"
 * "varol-2017.dat"
 * "vendor-purchased-2019.tsv"
-
-* "verified-2019.tsv" -> STILL NEED TO GET THIS DATA! Only humans though
-* "caverlee-2011" -> STILL NEED TO GET THIS DATA! content_polluters.txt and legitimate_users.txt, first column is user_id
-
 
 Datasets that already included their relevant variables: 
 

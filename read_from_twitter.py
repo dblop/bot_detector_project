@@ -5,11 +5,11 @@ import os.path
 import datetime
 from tweepy.error import RateLimitError, TweepError
 
-consumer_key = "7ud8FIZYfbNeTeXZhemTwl08T"
-consumer_secret = "aKsSRvFOiUdPjHbL2sKcwF55WBTWb4GAvM5BSFH6stvLyamyrJ"
+consumer_key = ""
+consumer_secret = ""
 
-access_token = "1180902059077521408-z01YFValEgCwAq6xsIgVgUt4daprM9"
-access_secret = "s6NDmZfODm14R7ZUfGQ1lqkzD5idAELeBMwfsERQamcuf"
+access_token = ""
+access_secret = ""
 
 auth = tweepy.AppAuthHandler(consumer_key, consumer_secret)
 
