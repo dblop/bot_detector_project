@@ -1,5 +1,5 @@
 # bot_detector
-This repository contains tests made for checking the effect of a few types of clustering pre-processing for bot detector on Twitter. It's part of an Msc program at USP (Universidade de São Paulo)
+This repository contains tests made for checking the effect of a few types of clustering pre-processing for bot detection on Twitter. It's part of an Msc program at USP (Universidade de São Paulo)
 
 Initial data used for training comes from datasets available at https://botometer.iuni.iu.edu/bot-repository/datasets.html
 
